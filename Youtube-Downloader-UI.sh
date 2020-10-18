@@ -43,6 +43,17 @@ function quality_lister {
 }
 
 #Main App
+if [[ $vpn_mode == 1 ]]; then
+    file_name=$(proxychains youtube-dl --get-filename $url | sed -n '2,$p')
+else
+    file_name=$(youtube-dl --get-filename $url | sed -n '2,$p')
+fi
+
+if [[ -z $file_name ]]; then
+    zenity --info --width 300 --text "Given URL Does not Exist."
+    exit 0
+fi
+
 if [[ $fast_mode == 1 ]]; then
     if [[ $vpn_mode == 1 ]]; then
         proxychains youtube-dl --write-sub --embed-subs --sub-lang en_US,en-US,en $url | zenity --progress --auto-close --pulsate --no-cancel --text "Downloading..."
@@ -63,12 +74,6 @@ fi
 
 #Finalizing
 rm $INPUT
-if [[ $vpn_mode == 1 ]]; then
-    file_name=$(proxychains youtube-dl --get-filename $url | sed -n '2,$p')
-else
-    file_name=$(youtube-dl --get-filename $url | sed -n '2,$p')
-fi
-
 if [[ -z ~/Downloads/Video/$file_name ]]; then
     zenity --info --width 300 --text "Failed To Download The Video."
 else
