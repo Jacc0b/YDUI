@@ -19,7 +19,6 @@ fi
 fast_mode=0
 vpn_mode=0
 cd ~/Videos
-file_name=$(proxychains youtube-dl --get-filename $url | sed -n '2,$p')
 
 #checks For Fast Mode
 zenity --question --width 300 --text "Use Fast Mode?"
@@ -64,6 +63,12 @@ fi
 
 #Finalizing
 rm $INPUT
+if [[ $vpn_mode == 1 ]]; then
+    file_name=$(proxychains youtube-dl --get-filename $url | sed -n '2,$p')
+else
+    file_name=$(youtube-dl --get-filename $url | sed -n '2,$p')
+fi
+
 if [[ -z ~/Downloads/Video/$file_name ]]; then
     zenity --info --width 300 --text "Failed To Download The Video."
 else
